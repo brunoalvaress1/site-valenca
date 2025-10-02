@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <!-- META / HEAD -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e0e10">
+  <title>Valença Eventos — Contato</title>
+
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- Site CSS -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- Early theme (default escuro) -->
+  <script>
+    (function(){
+      try{
+        var t = localStorage.getItem('ve-theme');
+        if(t === 'light'){ document.documentElement.setAttribute('data-theme','light'); }
+        else{ document.documentElement.removeAttribute('data-theme'); }
+      }catch(e){ document.documentElement.removeAttribute('data-theme'); }
+    })();
+  </script>
+
+  <!-- Estilos específicos desta página -->
+  <style>
+  /* Layout responsivo: calendário acima no mobile; à direita no desktop */
+  .contact-grid{
+    display:grid; gap:1.5rem;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "cal"
+      "form"
+      "addr";
+    align-items:start;
+  }
+  .grid-cal  { grid-area: cal; }
+  .grid-form { grid-area: form; }
+  .grid-addr { grid-area: addr; }
+
+  /* ➜ Calendário PARADO (sem sticky no desktop) */
+  @media (min-width: 992px){
+    .contact-grid{
+      grid-template-columns: 7fr 5fr;
+      grid-template-areas:
+        "form cal"
+        "form addr";
+    }
+    .grid-cal{ position: static !important; } /* antes era sticky */
+  }
+
+  /* ===== Calendário (hover reativado) ===== */
+.cal-cell{
+  aspect-ratio:1/1;
+  border:1px solid var(--border);
+  border-radius:.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.95rem;
+  cursor:pointer;
+  /* transições para hover suave */
+  transition: transform .12s ease, box-shadow .12s ease, outline-color .12s ease;
+}
+
+/* Estados de cor (mantidos) */
+:root{
+  --ok:   #3ac767;  /* disponível (verde) */
+  --bad:  #dc5050;  /* indisponível (vermelho) */
+  --past: #9aa0a6;  /* passado (cinza) */
+}
+.cal-cell.available{ background: rgba(58,199,103,.14); border-color: rgba(58,199,103,.55); color: var(--text); }
+.cal-cell.booked   { background: rgba(220,80,80,.16);  border-color: rgba(220,80,80,.60);  color: var(--text); }
+.cal-cell.past     { background: rgba(154,160,166,.18); border-color: rgba(154,160,166,.55); color: var(--text-soft); }
+
+.cal-cell.disabled{ cursor:not-allowed; text-decoration:line-through; }
+
+/* ➜ Hover ativo SOMENTE para disponíveis */
+.cal-cell.available:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(58,199,103,.25),
+              0 0 0 2px rgba(58,199,103,.45) inset;
+}
+.cal-cell.available:active{ transform: translateY(-1px); }
+
+/* Sem efeito para passado/indisponível */
+.cal-cell.booked:hover,
+.cal-cell.past:hover{
+  transform:none;
+  box-shadow:none;
+}
+
+/* Seleção permanece com anel dourado */
+.cal-cell.selected{
+  outline:2px solid var(--gold);
+  box-shadow:0 0 12px rgba(213,177,90,.25) inset;
+}
+
+/* Legenda (apenas referência, se quiser manter) */
+.badge-free{background:var(--ok)}
+.badge-booked{background:var(--bad)}
+.badge-past{background:var(--past)}
+
+
+  /* Form premium (mantive o restante que você já tinha) */
+  .form-card{ background: var(--card); border:1px solid var(--border); border-radius:1rem; }
+  .form-header{ display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; }
+  .badge-soft{
+    background: linear-gradient(90deg, rgba(213,177,90,.15), rgba(213,177,90,0));
+    color: var(--gold); border: 1px solid rgba(213,177,90,.35);
+    padding:.35rem .6rem; border-radius:999px; font-weight:600;
+  }
+  .input-icon { position: relative; }
+  .input-icon .bi{ position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.85; pointer-events:none; }
+  .input-icon .form-control, .input-icon .form-select{ padding-left:38px; }
+
+  .chip-group{ display:flex; flex-wrap:wrap; gap:.5rem; }
+  .chip{ position:relative; cursor:pointer; user-select:none; border:1px solid var(--border); color:var(--text);
+    background:var(--bg-soft); border-radius:999px; padding:.45rem .85rem; transition:transform .12s, box-shadow .12s, border-color .12s; font-size:.95rem; }
+  .chip input{ position:absolute; inset:0; opacity:0; }
+  .chip:hover{ transform:translateY(-1px); }
+  .chip input:checked + span{ color:#111; background:var(--gold); border-color:var(--gold); font-weight:600; padding:.45rem .9rem; }
+
+  .options{ display:grid; gap:.75rem; grid-template-columns:1fr; }
+  @media(min-width:576px){ .options{ grid-template-columns:1fr 1fr; } }
+  .option-card{ position:relative; border:1px solid var(--border); border-radius:.9rem; padding:1rem;
+    background:linear-gradient(180deg,var(--bg),var(--bg-soft)); transition:box-shadow .2s, border-color .2s, transform .12s; cursor:pointer; min-height:110px; }
+  .option-card:hover{ transform: translateY(-2px); }
+  .option-card input{ position:absolute; inset:0; opacity:0; }
+  .option-card .title{ display:flex; align-items:center; gap:.5rem; font-weight:700; }
+  .option-card .desc{ font-size:.9rem; color:var(--text-soft); margin-top:.35rem; }
+  .option-card:has(input:checked){ border-color: var(--gold); box-shadow: 0 0 0 2px rgba(213,177,90,.35) inset, 0 6px 18px rgba(0,0,0,.25); }
+
+  .progress{ height:8px; background:var(--bg-soft); border:1px solid var(--border); }
+  .progress-bar{ background: linear-gradient(90deg, var(--gold), #f3d88f); color:#111; }
+
+  /* ===== Calendário ===== */
+  .calendar{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;}
+  .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+  .cal-head button{border:1px solid var(--border);background:var(--bg-soft);color:var(--text);border-radius:.5rem;padding:.25rem .5rem}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem}
+  .cal-cell{
+    aspect-ratio:1/1;border:1px solid var(--border);border-radius:.5rem;
+    display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;
+    transition:box-shadow .12s ease, outline-color .12s ease;
+    /* Removi animação de deslocar: */
+    transform:none !important;
+  }
+  .cal-cell:hover{ transform:none !important; } /* não sobe ao hover */
+  .cal-cell.muted{opacity:.7;cursor:default;background:transparent}
+  .cal-cell.disabled{cursor:not-allowed;text-decoration:line-through}
+
+  /* ➜ Cores pedidas */
+  :root{
+    --ok:   #3ac767;      /* verde (disponível)   */
+    --bad:  #dc5050;      /* vermelho (indisp.)   */
+    --past: #9aa0a6;      /* cinza (passado)      */
+  }
+  .cal-cell.available{ background: rgba(58,199,103,.14); border-color: rgba(58,199,103,.55); color: var(--text); }
+  .cal-cell.booked   { background: rgba(220,80,80,.16);  border-color: rgba(220,80,80,.60);  color: var(--text); }
+  .cal-cell.past     { background: rgba(154,160,166,.18); border-color: rgba(154,160,166,.55); color: var(--text-soft); }
+
+  .cal-cell.selected{ outline:2px solid var(--gold); box-shadow:0 0 12px rgba(213,177,90,.25) inset }
+
+  /* Legenda */
+  .cal-legend{display:flex;gap:12px;margin-top:.5rem;font-size:.85rem;color:var(--text-soft);flex-wrap:wrap}
+  .badge-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+  .badge-free{background:var(--ok)}
+  .badge-booked{background:var(--bad)}
+  .badge-past{background:var(--past)}
+
+  #msgCounter { min-width:60px; text-align:right; }
+  .btn-gold-3d{ background: linear-gradient(180deg, var(--gold), #d3b15a); color:#111; font-weight:700; border:none; border-radius:.8rem; padding:.8rem 1.2rem;
+    box-shadow: 0 .4rem 0 #9c8342, 0 8px 24px rgba(213,177,90,.35); transform: translateY(0); transition: transform .12s, box-shadow .12s; }
+  .btn-gold-3d:hover{ transform: translateY(-2px); box-shadow: 0 .5rem 0 #9c8342, 0 12px 26px rgba(213,177,90,.45); }
+  .btn-gold-3d:active{ transform: translateY(1px); box-shadow: 0 .2rem 0 #9c8342; }
+  .btn-outline-gold { border:1px solid var(--gold); color: var(--gold); }
+  .btn-outline-gold:hover { background: var(--gold); color:#111; }
+
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== Formulário Premium — Valença ===== */
+.formx-card{
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--card), color-mix(in oklab, var(--card) 85%, #000 15%));
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+.formx-card::before{
+  content:""; position:absolute; inset:-2px;
+  background: conic-gradient(from 0deg, rgba(213,177,90,.0), rgba(213,177,90,.35), rgba(213,177,90,.0));
+  filter: blur(18px); opacity:.35; z-index:0; border-radius: 20px;
+  animation: ve-gold-glow 4s linear infinite;
+}
+@keyframes ve-gold-glow{ to{ transform: rotate(360deg) } }
+.formx-body{ position: relative; z-index: 1; }
+
+/* Header */
+.formx-header{
+  display:flex; align-items:center; gap:.75rem; margin-bottom: .75rem;
+}
+.formx-badge{
+  display:inline-flex; align-items:center; gap:.4rem;
+  background: linear-gradient(90deg, rgba(213,177,90,.14), rgba(213,177,90,0));
+  border:1px solid rgba(213,177,90,.4);
+  color: var(--gold); font-weight:700; padding:.35rem .7rem; border-radius: 999px;
+}
+
+/* Fieldsets */
+.fieldsetx{ border:1px solid var(--border); border-radius:14px; padding:1rem; background: linear-gradient(180deg, var(--bg), var(--bg-soft)); }
+.field-title{ display:flex; align-items:center; gap:.5rem; font-weight:800; margin-bottom:.75rem; }
+.field-title .bi{ color: var(--gold); }
+
+/* Inputs com ícone */
+.input-wrap{ position:relative; }
+.input-wrap .bi{ position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.9; pointer-events:none; color: var(--text-soft); }
+.input-wrap .form-control,
+.input-wrap .form-select{
+  padding-left: 40px;
+  background: color-mix(in oklab, var(--card) 88%, #000 12%);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.input-wrap .form-control:focus,
+.input-wrap .form-select:focus{
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gold) 25%, transparent);
+}
+
+/* Chips (extras) */
+.chips{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.chipx{
+  position:relative; border:1px solid var(--border); border-radius:999px;
+  background: var(--bg-soft); color: var(--text); padding:.45rem .9rem;
+  cursor:pointer; user-select:none; transition: transform .12s, box-shadow .12s, border-color .12s;
+  font-weight:600; font-size:.95rem;
+}
+.chipx input{ position:absolute; inset:0; opacity:0; }
+.chipx:hover{ transform: translateY(-1px); }
+.chipx input:checked + span{
+  background: var(--gold); color:#111; border-radius: 999px; padding:.45rem 1rem;
+  box-shadow: 0 6px 18px rgba(213,177,90,.35) inset;
+}
+
+/* Option tiles (pacotes) */
+.tiles{ display:grid; gap:.8rem; grid-template-columns:1fr; }
+@media (min-width:576px){ .tiles{ grid-template-columns:1fr 1fr; } }
+.tile{
+  position:relative; border:1px solid var(--border); border-radius:12px; padding:1rem;
+  background: linear-gradient(180deg, var(--bg), var(--bg-soft));
+  transition: border-color .2s, transform .12s, box-shadow .2s;
+  cursor:pointer; min-height:110px;
+}
+.tile:hover{ transform: translateY(-2px); }
+.tile input{ position:absolute; inset:0; opacity:0; }
+.tile .t-head{ display:flex; align-items:center; gap:.5rem; font-weight:800; }
+.tile .t-desc{ font-size:.9rem; color: var(--text-soft); margin-top:.3rem; }
+.tile:has(input:checked){
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(213,177,90,.35) inset, 0 8px 24px rgba(0,0,0,.26);
+}
+
+/* Range convidados */
+.range-wrap{ display:flex; align-items:center; gap:.75rem; }
+.range-wrap .bi{ color:var(--text-soft); }
+.form-range::-webkit-slider-thumb{ background: var(--gold); }
+.form-range::-moz-range-thumb{ background: var(--gold); }
+.form-range::-webkit-slider-runnable-track{ background: linear-gradient(90deg, var(--gold), #f3d88f); height:6px; }
+.form-range::-moz-range-track{ background: linear-gradient(90deg, var(--gold), #f3d88f); height:6px; }
+.badge-counter{ background: var(--gold); color:#111; font-weight:800; }
+
+/* Ações */
+.btn-gold-3d{ background: linear-gradient(180deg, var(--gold), #d3b15a); color:#111; font-weight:800; border:none; border-radius:.9rem; padding:.85rem 1.25rem;
+  box-shadow: 0 .45rem 0 #9c8342, 0 10px 26px rgba(213,177,90,.35); transform: translateY(0); transition: transform .12s, box-shadow .12s; }
+.btn-gold-3d:hover{ transform: translateY(-2px); box-shadow: 0 .55rem 0 #9c8342, 0 14px 30px rgba(213,177,90,.45); }
+.btn-outline-gold{ border:1px solid var(--gold); color: var(--gold); border-radius:.9rem; }
+.btn-outline-gold:hover{ background: var(--gold); color:#111; }
+
+/* Texto auxiliar */
+.muted{ color: var(--text-soft); font-size:.9rem; }
+
+:root:not([data-theme="light"]) input[type="time"]::-webkit-calendar-picker-indicator{
+  filter: invert(94%) brightness(5.0) sepia(50%) saturate(700%) hue-rotate(350deg) contrast(1.05) drop-shadow(0 0 2px rgb(255, 211, 109)) !important;
+}
+
+
+</style>
+
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-inner text-center">
+      <img src="assets/img/logo.png" alt="Valença Eventos" class="loader-logo" style="height:56px;margin-bottom:10px">
+      <div class="loader-ring" style="width:58px;height:58px;border-radius:50%;border:2px solid rgba(213,177,90,.35);border-top-color:var(--gold);animation:spin 1s linear infinite;margin:0 auto 8px"></div>
+      <p class="loader-text" style="color:var(--text-soft);font-size:.9rem">Carregando...</p>
+    </div>
+  </div>
+  <script>
+    function __veHideLoader(){var l=document.getElementById('loader');if(l){l.style.transition='opacity .3s';l.style.opacity='0';setTimeout(()=>l.style.display='none',300);}}
+    document.addEventListener('DOMContentLoaded',()=>{setTimeout(__veHideLoader,150)});
+  </script>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark-gold sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <img src="assets/img/logo.png" class="logo" alt="Valença Eventos" style="height:36px;width:auto">
+        <span class="brand-name">Valença Eventos</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="index.html#espaco">O Espaço</a></li>
+          <li class="nav-item"><a class="nav-link" href="galeria.html">Galeria</a></li>
+          <li class="nav-item"><a class="nav-link" href="servicos.html">Serviços</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="contato.html">Contato</a></li>
+          <li class="nav-item ms-lg-2">
+            <a href="https://wa.me/5519XXXXXXXXX?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20meu%20evento." class="btn btn-gold btn-sm uiv-btn-gradient" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp me-1"></i> Orçamento
+            </a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <button class="theme-toggle" id="themeToggle" type="button"><i class="bi bi-moon-stars"></i> <span class="tlabel">Escuro</span></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SUBHERO -->
+  <header class="subhero" style="padding:60px 0;background:linear-gradient(160deg,var(--bg),var(--bg-soft));border-bottom:1px solid var(--border)">
+    <div class="container text-center">
+      <h1 class="text-white">Contato</h1>
+      <p class="text-white-50">Envie sua data e retornaremos com uma proposta personalizada.</p>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <section class="py-5">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- CALENDÁRIO -->
+        <aside class="grid-cal">
+          <div class="card p-4 shadow-sm mb-4">
+            <div class="cal-sync"><span class="spinner"></span> Sincronizando disponibilidade…</div>
+            <h3 class="mb-3">Disponibilidade -  escolha sua data</h3>
+            <div id="ve-calendar" class="calendar" aria-live="polite"></div>
+            <small class="text-white-50 d-block mt-2">Selecione uma data disponível; o campo “Data do evento” será atualizado.</small>
+          </div>
+        </aside>
+
+        <div class="grid-form">
+  <div class="formx-card">
+    <div class="formx-body">
+      <div class="formx-header">
+        <span class="formx-badge"><i class="bi bi-magic"></i> Solicite seu orçamento</span>
+        <div class="flex-grow-1">
+          <div class="progress mt-2" role="progressbar" aria-label="Progresso" aria-valuemin="0" aria-valuemax="100">
+            <div id="formProgress" class="progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <form id="contactForm" class="needs-validation" novalidate>
+        <div class="row g-3">
+
+          <!-- Seus dados -->
+          <div class="col-12">
+            <div class="fieldsetx">
+              <div class="field-title"><i class="bi bi-person-vcard"></i> Seus dados</div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Nome completo</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-person"></i>
+                    <input type="text" class="form-control" name="name" placeholder="Seu nome" required>
+                    <div class="invalid-feedback">Informe seu nome.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Telefone / WhatsApp</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-telephone"></i>
+                    <input type="tel" class="form-control" name="phone" id="phoneInput" inputmode="tel" placeholder="(19) 99912-0418" required>
+                    <div class="invalid-feedback">Informe um telefone válido.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">E-mail</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-envelope"></i>
+                    <input type="email" class="form-control" name="email" placeholder="voce@email.com">
+                    <div class="invalid-feedback">E-mail inválido.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evento -->
+          <div class="col-12">
+            <div class="fieldsetx">
+              <div class="field-title"><i class="bi bi-calendar3-event"></i> Seu evento</div>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Data do evento</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-calendar4-event"></i>
+                    <input type="date" class="form-control" name="date" id="dateInput" required>
+                    <div class="invalid-feedback">Selecione uma data disponível.</div>
+                  </div>
+                </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Horário (início)</label>
+                      <!-- toda a área vira "botão" para abrir o seletor -->
+                      <div class="input-wrap time-hit time-pickable" role="button" tabindex="0" aria-label="Escolher horário">
+                    <i class="bi bi-clock-history"></i>
+                    <input type="time" class="form-control" name="time" id="timeInput" min="08:00" max="23:59" required>
+                    <div class="invalid-feedback">Informe o horário de início.</div>
+                    </div>
+                    </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Convidados (estimativa)</label>
+                  <div class="range-wrap">
+                    <i class="bi bi-people"></i>
+                    <input type="range" class="form-range flex-grow-1" id="guestsRange" min="30" max="120" step="10" value="100">
+                    <output id="guestsOut" class="badge badge-counter">100</output>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pacote -->
+          <div class="col-12">
+            <div class="fieldsetx">
+              <div class="field-title"><i class="bi bi-stars"></i> Pacote desejado</div>
+              <div class="tiles">
+                <label class="tile">
+                  <input type="radio" name="package" value="Essencial" checked>
+                  <div class="t-head"><i class="bi bi-star"></i> Essencial</div>
+                  <div class="t-desc">Espaço + apoio básico • Até 150 convidados</div>
+                </label>
+                <label class="tile">
+                  <input type="radio" name="package" value="Completo">
+                  <div class="t-head"><i class="bi bi-brilliance"></i> Completo</div>
+                  <div class="t-desc">Espaço + buffet + decoração • DJ/Iluminação</div>
+                </label>
+                <label class="tile">
+                  <input type="radio" name="package" value="Corporativo">
+                  <div class="t-head"><i class="bi bi-briefcase"></i> Corporativo</div>
+                  <div class="t-desc">Palestras/Convenções • Equip. audiovisual</div>
+                </label>
+                <label class="tile">
+                  <input type="radio" name="package" value="A definir">
+                  <div class="t-head"><i class="bi bi-sliders2"></i> A definir</div>
+                  <div class="t-desc">Montamos conforme sua necessidade</div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extras -->
+          <div class="col-12">
+            <div class="fieldsetx">
+              <div class="field-title"><i class="bi bi-plus-circle"></i> Extras</div>
+              <div class="chips">
+                <label class="chipx"><input type="checkbox" name="extras" value="Decoração"><span>Decoração</span></label>
+                <label class="chipx"><input type="checkbox" name="extras" value="Buffet"><span>Buffet</span></label>
+                <label class="chipx"><input type="checkbox" name="extras" value="DJ e Iluminação"><span>DJ e Iluminação</span></label>
+                <label class="chipx"><input type="checkbox" name="extras" value="Fotografia"><span>Fotografia</span></label>
+              </div>
+            </div>
+          </div>
+
+        
+          <!-- Mensagem -->
+          <div class="col-12">
+            <div class="fieldsetx">
+              <div class="field-title"><i class="bi bi-pencil-square"></i> Mensagem</div>
+              <div class="input-wrap">
+                <i class="bi bi-chat-text"></i>
+                <textarea class="form-control" rows="4" name="message" id="msgInput" maxlength="500" placeholder="Conte um pouco sobre o seu evento..."></textarea>
+              </div>
+              <div class="d-flex justify-content-between mt-1">
+                <small class="muted">Dica: tema, faixa de convidados, necessidades especiais.</small>
+                <small id="msgCounter" class="muted">0/500</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- LGPD -->
+          <div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="lgpdCheck" required>
+              <label class="form-check-label" for="lgpdCheck">
+                Concordo em ser contatado(a) pelo Valença Eventos conforme a <a href="#" class="uiv-underline">Política de Privacidade</a>.
+              </label>
+              <div class="invalid-feedback">É necessário aceitar para enviar.</div>
+            </div>
+          </div>
+
+          <!-- Ações -->
+          <div class="col-12 d-grid d-sm-flex gap-2 mt-1">
+            <button class="btn btn-gold-3d px-4" type="submit"><i class="bi bi-send me-1"></i> Enviar</button>
+            <button class="btn btn-outline-gold px-4" type="button" id="btnWhatsapp"><i class="bi bi-whatsapp me-1"></i> Enviar via WhatsApp</button>
+          </div>
+
+          <!-- Alertas -->
+          <div class="col-12"><div id="formAlert" class="alert d-none" role="alert"></div></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+        <!-- ENDEREÇO -->
+        <aside class="grid-addr">
+          <div class="card p-4 shadow-sm">
+            <h3 class="mb-3">Endereço</h3>
+            <p>R. Profa. Durvalina Cantinho, 360 - Parque Res. Itamaraty, Leme - SP, 13617-515</p>
+            <p><i class="bi bi-telephone me-2"></i>19998806465</p>
+            <p><i class="bi bi-envelope me-2"></i>contato@valencaeventos.com.br</p>
+            <div class="ratio ratio-16x9 rounded overflow-hidden">
+              <iframe src="https://www.google.com/maps?q=R. Profa. Durvalina Cantinho, 360 - Parque Res. Itamaraty, Leme - SP, 13617-515&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer mt-5">
+    <div class="container py-4 text-center">
+      <div><strong>Valença Eventos</strong> — Leme, SP</div>
+      <div class="rights">Todos os direitos reservados por Valença Eventos.</div>
+      <div class="signature mt-1">Site desenvolvido por <strong>Prime Page</strong></div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float -->
+  <a href="https://wa.me/5519XXXXXXXXX?text=Ol%C3%A1!%20Quero%20fazer%20um%20evento." class="whatsapp-float uiv-pulse-ring" target="_blank" rel="noopener" aria-label="WhatsApp" style="position:fixed;right:18px;bottom:18px;height:56px;width:56px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;z-index:9999;box-shadow:0 6px 18px rgba(0,0,0,.35);">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
+  <!-- Vendor JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+  <!-- Site JS -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- JS específico desta página -->
+  <script>
+(function(){
+  if (window.__ve_contact_injected) return; window.__ve_contact_injected = true;
+
+  const form = document.getElementById('contactForm');
+  const dateInput = document.getElementById('dateInput');
+  const phone = document.getElementById('phoneInput');
+  const msg = document.getElementById('msgInput');
+  const counter = document.getElementById('msgCounter');
+  const guestsRange = document.getElementById('guestsRange');
+  const guestsOut = document.getElementById('guestsOut');
+  const btnWpp = document.getElementById('btnWhatsapp');
+  const progressBar = document.getElementById('formProgress');
+  const calMount = document.getElementById('ve-calendar');
+  const calSync = document.querySelector('.cal-sync');
+
+  /* ===== Tema persistente ===== */
+  (function(){
+    const btn = document.getElementById('themeToggle'); if (!btn) return;
+    const applyTheme = (t) => {
+      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+      else document.documentElement.removeAttribute('data-theme');
+      try{ localStorage.setItem('ve-theme', t); }catch(e){}
+      const icon = btn.querySelector('i'); const label = btn.querySelector('.tlabel');
+      const isLight = document.documentElement.getAttribute('data-theme')==='light';
+      if (icon) icon.className = isLight ? 'bi bi-brightness-high' : 'bi bi-moon-stars';
+      if (label) label.textContent = isLight ? 'Claro' : 'Escuro';
+    };
+    let saved = null; try{ saved = localStorage.getItem('ve-theme'); }catch(e){}
+    applyTheme(saved || 'dark');
+    btn.addEventListener('click', ()=> {
+      const isLight = document.documentElement.getAttribute('data-theme')==='light';
+      applyTheme(isLight ? 'dark' : 'light');
+    });
+  })();
+
+  /* ===== Data mínima = hoje + impedir digitação ===== */
+  let lastValidDate = ''; // guarda a última data válida
+  if (dateInput){
+    const today = new Date(), yyyy=today.getFullYear(), mm=String(today.getMonth()+1).padStart(2,'0'), dd=String(today.getDate()).padStart(2,'0');
+    const min = `${yyyy}-${mm}-${dd}`;
+    dateInput.setAttribute('min', min);
+
+    // impedir digitação manual (o datepicker do SO ainda funciona)
+    dateInput.setAttribute('readonly','');
+    dateInput.addEventListener('keydown', e=> e.preventDefault());
+  }
+
+  /* ===== Máscara telefone BR ===== */
+  if (phone){
+    const mask = v => {
+      v = v.replace(/\D/g,'');
+      if (v.length > 11) v = v.slice(0,11);
+      if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+      else if (v.length > 0) v = v.replace(/^(\d{0,2}).*/, '($1');
+      return v.trim();
+    };
+    const onMask = ()=> phone.value = mask(phone.value);
+    phone.addEventListener('input', onMask);
+    phone.addEventListener('blur', onMask);
+  }
+
+  /* ===== Contador mensagem ===== */
+  if (msg && counter){
+    const update = ()=> counter.textContent = `${msg.value.length}/${msg.maxLength}`;
+    msg.addEventListener('input', update); update();
+  }
+
+  /* ===== Convidados -> output ===== */
+  if (guestsRange && guestsOut){
+    const up = ()=> guestsOut.textContent = guestsRange.value;
+    guestsRange.addEventListener('input', up); up();
+  }
+
+  /* ===== Barra de progresso ===== */
+  const requiredSelectors = ['[name="name"]','[name="phone"]','#dateInput','#timeInput','#lgpdCheck'];
+  function calcProgress(){
+    let filled = 0;
+    requiredSelectors.forEach(sel=>{
+      const el = document.querySelector(sel);
+      if(!el) return;
+      if(el.type === 'checkbox') filled += el.checked ? 1 : 0;
+      else filled += el.value?.trim() ? 1 : 0;
+    });
+    const pct = Math.round((filled / requiredSelectors.length) * 100);
+    if (progressBar){ progressBar.style.width = pct + '%'; progressBar.setAttribute('aria-valuenow', pct); }
+  }
+  document.addEventListener('input', e=>{
+    if(requiredSelectors.some(sel=> e.target.matches(sel))) calcProgress();
+  });
+  document.addEventListener('change', e=>{
+    if(requiredSelectors.some(sel=> e.target.matches(sel))) calcProgress();
+  });
+  calcProgress();
+
+  /* ===== Alert helper ===== */
+  function showAlert(text, type){
+    const box = document.getElementById('formAlert');
+    if (!box) return;
+    box.className = `alert alert-${type}`;
+    box.textContent = text;
+  }
+
+  /* ===== Envio p/ WhatsApp (sem sair do site) ===== */
+  const WPP_NUMBER = '5519999120418'; // número oficial
+
+  function getFormPayload(){
+    const getVals = (name) => form.querySelector(`[name="${name}"]`)?.value?.trim() || '';
+    const getRadio = (name) => form.querySelector(`[name="${name}"]:checked`)?.value || '';
+    const extras = Array.from(form.querySelectorAll('input[name="extras"]:checked')).map(e=>e.value).join(', ') || '—';
+    return {
+      nome: getVals('name'),
+      fone: getVals('phone'),
+      email: getVals('email'),
+      data: getVals('date'),
+      hora: getVals('time'),
+      tipo: getVals('type'), // opcional
+      pacote: getRadio('package') || getVals('package'),
+      convidados: guestsRange ? guestsRange.value : '',
+      contato: getRadio('contactPref'),
+      melhorHorario: document.getElementById('bestTime')?.value || '',
+      extras,
+      msg: msg ? msg.value.trim() : ''
+    };
+  }
+
+  function buildWppText(payload){
+    return [
+      '*Novo orçamento - Valença Eventos*',
+      `*Nome:* ${payload.nome}`,
+      `*Telefone:* ${payload.fone}`,
+      `*E-mail:* ${payload.email}`,
+      `*Data:* ${payload.data} ${payload.hora ? `às ${payload.hora}` : ''}`,
+      payload.tipo ? `*Tipo:* ${payload.tipo}` : null,
+      `*Pacote:* ${payload.pacote}`,
+      `*Convidados:* ${payload.convidados}`,
+      `*Preferência de contato:* ${payload.contato} (${payload.melhorHorario})`,
+      `*Extras:* ${payload.extras}`,
+      `*Mensagem:* ${payload.msg || '—'}`
+    ].filter(Boolean).join('\n');
+  }
+
+  function sendToWhatsApp(){
+    const payload = getFormPayload();
+    const text = buildWppText(payload);
+    const url = `https://wa.me/${WPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank'); // não sai da página
+  }
+
+  /* ===== Calendário (com validação forte) ===== */
+  const Calendar = (function(){
+    const state = { d: new Date(), blocked: new Set() };
+    state.d.setDate(1);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const fmt = (y,m,d)=> `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+
+    function isAvailableYMD(ymd){
+      if (!ymd) return false;
+      const [y,m,d] = ymd.split('-').map(n=>parseInt(n,10));
+      if (!y || !m || !d) return false;
+      const dt = new Date(y, m-1, d); dt.setHours(0,0,0,0);
+      if (dt < today) return false;
+      return !state.blocked.has(ymd);
+    }
+
+    function render(){
+      if (!calMount) return;
+      calMount.innerHTML = '';
+      const head = document.createElement('div'); head.className = 'cal-head';
+      const title = document.createElement('div'); title.textContent = state.d.toLocaleString('pt-BR',{month:'long', year:'numeric'});
+      const controls = document.createElement('div');
+      const prev = document.createElement('button'); prev.innerHTML = '&laquo;';
+      const next = document.createElement('button'); next.innerHTML = '&raquo;';
+      controls.append(prev, next); head.append(title, controls);
+
+      const grid = document.createElement('div'); grid.className = 'cal-grid';
+      const y = state.d.getFullYear(); const m = state.d.getMonth();
+      const firstDay = new Date(y,m,1);
+      const start = (firstDay.getDay() + 6) % 7; // semana inicia na segunda
+      const daysInMonth = new Date(y, m+1, 0).getDate();
+
+      // Cabeçalho semanal
+      ['S','T','Q','Q','S','S','D'].forEach(w => {
+        const h = document.createElement('div');
+        h.className = 'cal-cell muted'; h.textContent = w;
+        h.style.fontWeight='600'; h.style.cursor='default';
+        grid.append(h);
+      });
+
+      // Espaços vazios antes do 1º dia
+      for (let i=0; i<start; i++) grid.append(Object.assign(document.createElement('div'),{className:'cal-cell muted'}));
+
+      // Dias do mês
+      for (let day=1; day<=daysInMonth; day++){
+        const cell = document.createElement('div'); cell.className='cal-cell'; cell.textContent = day;
+        const dateStr = fmt(y,m,day);
+        const dt = new Date(y,m,day); dt.setHours(0,0,0,0);
+
+        const isPast = dt < today;
+        const isBlocked = state.blocked.has(dateStr);
+
+        if (isPast){
+          cell.classList.add('past','disabled'); cell.title = 'Data passada';
+        } else if (isBlocked){
+          cell.classList.add('booked','disabled'); cell.title = 'Indisponível';
+        } else {
+          cell.classList.add('available');
+        }
+
+        cell.addEventListener('click', () => {
+          if (cell.classList.contains('disabled')) return;
+          grid.querySelectorAll('.cal-cell.selected').forEach(el=>el.classList.remove('selected'));
+          cell.classList.add('selected');
+          if (dateInput) {
+            dateInput.value = dateStr;
+            dateInput.setCustomValidity('');
+            lastValidDate = dateStr; // atualiza a última válida
+            dateInput.dispatchEvent(new Event('change'));
+          }
+        });
+
+        grid.append(cell);
+      }
+
+      const legend = document.createElement('div'); legend.className='cal-legend';
+      legend.innerHTML = `
+        <span><span class="badge-dot badge-free"></span>Disponível</span>
+        <span><span class="badge-dot badge-booked"></span>Indisponível</span>
+        <span><span class="badge-dot badge-past"></span>Passado</span>
+      `;
+
+      calMount.append(head, grid, legend);
+      prev.addEventListener('click', ()=>{ state.d.setMonth(state.d.getMonth()-1); render(); });
+      next.addEventListener('click', ()=>{ state.d.setMonth(state.d.getMonth()+1); render(); });
+    }
+
+    function setBlocked(datesSet){ state.blocked = datesSet || new Set(); render(); }
+    function addBlocked(datesArray){ datesArray.forEach(d => state.blocked.add(d)); render(); }
+    function getMonthRange(){
+      const d1 = new Date(state.d.getFullYear(), state.d.getMonth(), 1);
+      const d2 = new Date(state.d.getFullYear(), state.d.getMonth()+1, 0);
+      return [d1, d2];
+    }
+
+    return { render, setBlocked, addBlocked, getMonthRange, isAvailable: isAvailableYMD };
+  })();
+
+  Calendar.render();
+
+  /* ===== Validação forte do campo de data ===== */
+  function ensureAvailableOrRevert(){
+    if (!dateInput || !dateInput.value) return;
+    const chosen = dateInput.value;
+    if (!Calendar.isAvailable(chosen)){
+      // data inválida -> reverte e mostra alerta
+      dateInput.setCustomValidity('Data indisponível. Escolha uma data verde no calendário.');
+      dateInput.reportValidity();
+      showAlert('Essa data não está disponível. Selecione uma data verde no calendário.', 'danger');
+      // reverter
+      setTimeout(()=>{
+        dateInput.setCustomValidity('');
+        dateInput.value = lastValidDate || '';
+      }, 20);
+      return false;
+    }else{
+      dateInput.setCustomValidity('');
+      lastValidDate = chosen;
+      return true;
+    }
+  }
+  if (dateInput){
+    dateInput.addEventListener('change', ensureAvailableOrRevert);
+    // se vier pré-preenchido por autocomplete, valida ao carregar
+    window.addEventListener('load', ()=> { if(dateInput.value) ensureAvailableOrRevert(); });
+  }
+
+  /* ===== Integração Google Calendar ===== */
+  const GCAL = {
+    CALENDAR_ID: 'brunoavr213@gmail.com', // ajuste se necessário
+    API_KEY: 'AIzaSyB_UqCbhq6vGj_wsdhoTdUMaLmm5h071E4', // restrinja no GCP por domínio
+    TIMEZONE: 'America/Sao_Paulo',
+    BLOCK_BY_DAY: true,
+    MONTHS_AHEAD: 12
+  };
+
+  async function loadGoogleCalendarBlockedDates(){
+    if (!GCAL.CALENDAR_ID || !GCAL.API_KEY) { if (calSync) calSync.innerHTML = 'Configure o Google Calendar (ID e API KEY).'; return new Set(); }
+
+    const timeMin = new Date(); timeMin.setHours(0,0,0,0);
+    const timeMax = new Date(timeMin); timeMax.setMonth(timeMax.getMonth() + GCAL.MONTHS_AHEAD);
+
+    const params = new URLSearchParams({
+      key: GCAL.API_KEY,
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '2500',
+      timeMin: timeMin.toISOString(),
+      timeMax: timeMax.toISOString(),
+      timeZone: GCAL.TIMEZONE
+    });
+
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(GCAL.CALENDAR_ID)}/events?${params.toString()}`;
+
+    try{
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Google API error ' + res.status);
+      const data = await res.json();
+      const blocked = new Set();
+
+      // iterar dias de start (incl) a end (excl)
+      const eachDate = (start, end, cb) => {
+        const d = new Date(start.getTime());
+        while (d < end){ cb(new Date(d)); d.setDate(d.getDate()+1); }
+      };
+      const toYMD = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth()+1).padStart(2,'0');
+        const dd = String(d.getDate()).padStart(2,'0');
+        return `${y}-${m}-${dd}`;
+      };
+
+      (data.items || []).forEach(ev=>{
+        let start, end;
+        if (ev.start?.date){ // dia inteiro
+          start = new Date(ev.start.date + 'T00:00:00');
+          end   = new Date(ev.end.date   + 'T00:00:00'); // end exclusivo
+        } else if (ev.start?.dateTime){
+          start = new Date(ev.start.dateTime);
+          end   = new Date(ev.end?.dateTime || ev.start.dateTime);
+        }
+        if (!start || !end) return;
+
+        if (GCAL.BLOCK_BY_DAY){
+          const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+          const e = new Date(end.getFullYear(),   end.getMonth(),   end.getDate());
+          if (e <= s) e.setDate(s.getDate()+1); // garante 1 dia
+          eachDate(s, e, d => blocked.add(toYMD(d)));
+        } else {
+          const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+          blocked.add(toYMD(s));
+        }
+      });
+
+      return blocked;
+    }catch(err){
+      console.error(err);
+      if (calSync) calSync.innerHTML = 'Falha ao sincronizar. Verifique sua API Key e permissões do calendário.';
+      return new Set();
+    }
+  }
+
+  (async function initCalendar(){
+    const manual = new Set([ /* ex: '2025-12-24' */ ]);
+    const gBlocked = await loadGoogleCalendarBlockedDates();
+    const union = new Set([...gBlocked, ...manual]);
+    Calendar.setBlocked(union);
+    if (calSync) calSync.style.display = 'none';
+
+    // se o usuário tinha escolhido uma data inválida antes da sync, revalida agora
+    if (dateInput && dateInput.value) ensureAvailableOrRevert();
+  })();
+
+  /* ===== Botões (enviar) ===== */
+  if (btnWpp){
+    btnWpp.addEventListener('click', () => {
+      // validação do form + data disponível
+      if (!form.checkValidity() || (dateInput && !Calendar.isAvailable(dateInput.value))){
+        form.classList.add('was-validated');
+        if (dateInput && !Calendar.isAvailable(dateInput.value)){
+          showAlert('Essa data não está disponível. Selecione uma data verde no calendário.', 'danger');
+          dateInput.setCustomValidity('Data indisponível');
+          dateInput.reportValidity();
+          setTimeout(()=> dateInput.setCustomValidity(''), 100);
+        } else {
+          showAlert('Por favor, verifique os campos destacados.', 'danger');
+        }
+        return;
+      }
+      sendToWhatsApp();
+      showAlert('mensagem enviada, verifique seu whatsapp', 'success');
+    });
+  }
+
+  if (form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault(); // não sai da página
+      // impede submissão com data indisponível
+      const dateOK = !dateInput || Calendar.isAvailable(dateInput.value);
+      if (!form.checkValidity() || !dateOK){
+        form.classList.add('was-validated');
+        if (!dateOK){
+          showAlert('Essa data não está disponível. Selecione uma data verde no calendário.', 'danger');
+          dateInput.setCustomValidity('Data indisponível');
+          dateInput.reportValidity();
+          setTimeout(()=> dateInput.setCustomValidity(''), 100);
+        } else {
+          showAlert('Por favor, verifique os campos destacados.', 'danger');
+        }
+        calcProgress();
+        return;
+      }
+      sendToWhatsApp();
+      showAlert('mensagem enviada, verifique seu whatsapp', 'success');
+      form.classList.add('was-validated');
+      calcProgress();
+    }, false);
+  }
+
+})();
+
+const dateInput = document.getElementById('dateInput');
+const phone = document.getElementById('phoneInput');
+const msg = document.getElementById('msgInput');
+
+
+// === Abrir seletor de horário clicando em qualquer lugar do bloco ===
+(function(){
+  const timeInput = document.getElementById('timeInput');
+  const timeWrap  = document.querySelector('.time-hit');
+  if (!timeInput || !timeWrap) return;
+
+  // clique/touch no container abre o seletor (conta como gesto do usuário)
+  const openPicker = () => {
+    if (typeof timeInput.showPicker === 'function') {
+      timeInput.showPicker();                 // Chrome/Edge/Safari novos
+    } else {
+      timeInput.focus();
+      timeInput.click();                      // fallback
+    }
+  };
+
+  timeWrap.addEventListener('click', (e) => {
+    // se clicou diretamente no input, o próprio navegador abre — então não duplicar
+    if (e.target !== timeInput) openPicker();
+  });
+
+  // acessibilidade: Enter/Espaço também abrem
+  timeWrap.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openPicker();
+    }
+  });
+})();
+
+
+
+</script>
+
+</body>
+</html>

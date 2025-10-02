@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Meta & SEO -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0e0e10" />
+    <meta name="description" content="Valença Eventos — salão de festas em Leme-SP. Estrutura para casamentos, aniversários e eventos corporativos." />
+    <meta property="og:title" content="Valença Eventos" />
+    <meta property="og:description" content="Seu evento merece o melhor! Salão de festas com estrutura completa em Leme-SP." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/img/logo.png" />
+    <title>Valença Eventos</title>
+
+    <!-- CSS libs -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <!-- App CSS -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+
+    <!-- Early theme: default escuro; só ativa claro se salvo -->
+    <script id="ve-theme-early">
+      (function () {
+        try {
+          var t = localStorage.getItem("ve-theme");
+          if (t === "light") document.documentElement.setAttribute("data-theme", "light");
+          else document.documentElement.removeAttribute("data-theme");
+        } catch (e) {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Loading overlay -->
+    <div id="loader" aria-hidden="true">
+      <div class="loader-inner">
+        <img src="assets/img/logo.png" alt="Valença Eventos" class="loader-logo" />
+        <div class="loader-ring"></div>
+        <p class="loader-text">Carregando...</p>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-gold sticky-top shadow-sm">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="assets/img/logo.png" class="logo" alt="Valença Eventos" />
+          <span class="brand-name">Valença Eventos</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Abrir menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+            <li class="nav-item"><a class="nav-link" href="index.html#espaco">O Espaço</a></li>
+            <li class="nav-item"><a class="nav-link" href="galeria.html">Galeria</a></li>
+            <li class="nav-item"><a class="nav-link" href="servicos.html">Serviços</a></li>
+            <li class="nav-item"><a class="nav-link" href="contato.html">Contato</a></li>
+            <li class="nav-item ms-lg-2">
+              <a href="https://wa.me/5519XXXXXXXXX?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20meu%20evento." class="btn btn-gold btn-sm uiv-btn-gradient" target="_blank" rel="noopener">
+                <i class="bi bi-whatsapp me-1"></i> Orçamento
+              </a>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <button class="theme-toggle" id="themeToggle" type="button"><i class="bi bi-moon-stars"></i> <span class="tlabel">Escuro</span></button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero d-flex align-items-center">
+      <div class="container text-center" data-aos="fade-up">
+        <p class="badge bg-gold-trans text-dark fw-semibold px-3 py-2 mb-3 tagline-pop">Eventos inesquecíveis</p>
+        <h1 class="display-5 fw-bold text-white">Seu momento, nosso espaço.</h1>
+        <p class="lead text-white-50 mt-2">
+          Estrutura completa para casamentos, aniversários e eventos corporativos em Leme-SP.
+        </p>
+        <div class="mt-3">
+          <a href="contato.html" class="btn btn-gold btn-lg uiv-btn-gradient me-2">Solicitar orçamento</a>
+          <a href="galeria.html" class="btn btn-outline-light btn-lg uiv-underline">Ver galeria</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- O Espaço (texto à esquerda; 4 imagens à direita) -->
+    <section id="espaco" class="py-5">
+      <div class="container">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="mb-3">O Espaço Valença</h2>
+            <p>
+              Ambiente sofisticado com iluminação cênica, climatização e palco. Cozinha equipada, camarim, acessibilidade e estacionamento. Perfeito para até 250 convidados.
+            </p>
+            <ul class="list-unstyled mt-3">
+              <li><i class="bi bi-check2-square me-2 text-gold"></i>Salão amplo e climatizado</li>
+              <li><i class="bi bi-check2-square me-2 text-gold"></i>Pacotes com buffet e decoração</li>
+              <li><i class="bi bi-check2-square me-2 text-gold"></i>Áudio e iluminação profissional</li>
+              <li><i class="bi bi-check2-square me-2 text-gold"></i>Equipe de apoio durante o evento</li>
+            </ul>
+            <a href="servicos.html" class="btn btn-outline-gold mt-3">Conheça os serviços</a>
+          </div>
+          <div class="col-lg-6" data-aos="fade-left">
+            <div class="row g-2">
+              <div class="col-6">
+                  <img src="assets/img/salao1.jfif" class="img-fluid rounded shadow-sm object-fit-cover gold-glow" alt="Imagem salão 1" />
+              </div>
+              <div class="col-6">
+                  <img src="assets/img/salao7.jfif" class="img-fluid rounded shadow-sm object-fit-cover gold-glow" alt="Imagem salão 2" />
+              </div>
+              <div class="col-6">
+                  <img src="assets/img/salao5.jfif" class="img-fluid rounded shadow-sm object-fit-cover gold-glow" alt="Imagem salão 3" />
+              </div>
+              <div class="col-6">
+                  <img src="assets/img/salao8.jfif" class="img-fluid rounded shadow-sm object-fit-cover gold-glow" alt="Imagem salão 4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pacotes -->
+    <section class="py-5 bg-dark-soft section-sep">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <h2 class="mb-2 text-white">Pacotes e Combos</h2>
+          <p class="text-white-50">Monte o evento perfeito para você.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4" data-aos="zoom-in">
+            <div class="card card-pricing h-100 uiv-card-hover">
+              <div class="card-header">Essencial</div>
+              <div class="card-body">
+                <h3 class="price">R$ <span>—</span></h3>
+                <ul class="list-unstyled">
+                  <li>Aluguel do salão (6h)</li>
+                  <li>Limpeza e segurança</li>
+                  <li>Mesa de bolo e apoio</li>
+                </ul>
+                <a href="contato.html" class="btn btn-gold w-100">Consultar</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card card-pricing highlight h-100 uiv-card-hover">
+              <div class="card-header">
+                Completo <span class="badge bg-gold text-dark ms-2">Mais pedido</span>
+              </div>
+              <div class="card-body">
+                <h3 class="price">R$ <span>—</span></h3>
+                <ul class="list-unstyled">
+                  <li>Salão + buffet + decoração</li>
+                  <li>DJ e iluminação</li>
+                  <li>Equipe de apoio</li>
+                </ul>
+                <a href="contato.html" class="btn btn-gold w-100">Ver detalhes</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card card-pricing h-100 uiv-card-hover">
+              <div class="card-header">Corporativo</div>
+              <div class="card-body">
+                <h3 class="price">R$ <span>—</span></h3>
+                <ul class="list-unstyled">
+                  <li>Estrutura para palestras</li>
+                  <li>Coffee break opcional</li>
+                  <li>Suporte técnico</li>
+                </ul>
+                <a href="contato.html" class="btn btn-gold w-100">Solicitar proposta</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ animado -->
+    <section id="faq" class="py-5">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <h2 class="mb-2">FAQ</h2>
+          <p class="text-white-50">Perguntas frequentes</p>
+        </div>
+        <div class="faq">
+          <button class="faq-q" type="button">Quantas pessoas cabem no salão?<i class="bi bi-plus"></i></button>
+          <div class="faq-a">Até 120 convidados.</div>
+
+          <button class="faq-q" type="button">Posso levar meu buffet ou DJ?<i class="bi bi-plus"></i></button>
+          <div class="faq-a">Temos parceiros, mas você pode trazer sua equipe. Consulte taxas e requisitos.</div>
+
+          <button class="faq-q" type="button">Vocês oferecem decoração?<i class="bi bi-plus"></i></button>
+          <div class="faq-a">Sim, projetos personalizados conforme o estilo do seu evento.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Depoimentos (Swiper) -->
+    <section id="depoimentos" class="py-5">
+      <div class="container">
+        <div class="text-center mb-4" data-aos="fade-up">
+          <h2 class="mb-2">Depoimentos</h2>
+          <p class="text-white-50">O que nossos clientes dizem sobre celebrar no Valença.</p>
+        </div>
+
+        <div class="swiper" data-aos="fade-up">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="card testimonial-card h-100 p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <img src="assets/img/logo.svg" class="avatar rounded-circle me-3" alt="" />
+                  <div><strong>Ana &amp; Lucas</strong><br /><span class="small text-white-50">Casamento</span></div>
+                </div>
+                <p class="quote">“Equipe atenciosa, iluminação perfeita e fotos incríveis. A noite foi inesquecível!”</p>
+                <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card testimonial-card h-100 p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <img src="assets/img/logo.svg" class="avatar rounded-circle me-3" alt="" />
+                  <div><strong>Empresa XYZ</strong><br /><span class="small text-white-50">Evento Corporativo</span></div>
+                </div>
+                <p class="quote">“Estrutura impecável e suporte técnico o tempo todo. Voltaremos!”</p>
+                <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="card testimonial-card h-100 p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <img src="assets/img/logo.svg" class="avatar rounded-circle me-3" alt="" />
+                  <div><strong>Marina</strong><br /><span class="small text-white-50">Aniversário</span></div>
+                </div>
+                <p class="quote">“Decoração minimalista e elegante. O salão surpreendeu todos os convidados.”</p>
+                <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination mt-3"></div>
+          <div class="swiper-button-prev d-none d-lg-flex"></div>
+          <div class="swiper-button-next d-none d-lg-flex"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer + WhatsApp + ScrollTop -->
+    <footer class="footer mt-5">
+      <div class="container py-4">
+        <div><strong>Valença Eventos</strong> — Leme, SP</div>
+        <div class="rights">CNPJ 00.000.000/0000-00 • Todos os direitos reservados por Valença Eventos.</div>
+        <div class="social mt-2">
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="https://wa.me/5519XXXXXXXXX" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        </div>
+        <div class="signature">Site desenvolvido por <strong>Prime Page</strong></div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/5519XXXXXXXXX?text=Ol%C3%A1!%20Quero%20fazer%20um%20evento." class="whatsapp-float uiv-pulse-ring" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <button id="scrollTop" aria-label="Voltar ao topo"><i class="bi bi-arrow-up"></i></button>
+
+    <!-- JS libs -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <!-- App JS -->
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
